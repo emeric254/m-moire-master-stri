@@ -1,0 +1,176 @@
+\section{Bilan de mes réalisations et services rendus aux projets}
+\label{p3}
+
+    \subsection{Conception et développement d'outils}
+
+        \subsubsection{Le serveur de bouchons (mock-server)}
+        Serveur de bouchons (mock-server)
+
+        J’ai débuté mon alternance par la prise en main d'un projet Java existant, pour me former d'avantage et comprendre le système de web-services , API et de leurs usages.
+
+        On parle de bouchon pour définir une unique réponse «en dur à une requête.
+        Bouchonnée une API revient à en fournir un jeu de test, un comportement figé de référence, jouable par n’importe qui.
+        Un serveur de bouchons par extension est un regroupement des bouchons pour éviter à chaque projet d’avoir, en plus de faire évoluer les bouchons avec la documentation, leur plateforme de bouchon à déployer, rendre accessible et maintenir tout le long de la vie du dit projet.
+
+        Les plus grandes difficultés rencontrées furent la reprise de l’ancien code de l’application car il n’était pas du tout organisé ni dans son répertoire Git (une seule branche et une multitude de dossier contenant chacun une version), ni en interne dans ses sources ; ce code traitait tout «à la main».
+        Une autre difficulté importante fut le déploiement de l’outil pendant ces deux ans, l'infrastructure et les processus n'étant pas adapté à ce type de projet.
+
+        Comme vous pouvez le deviner, le projet fut de ré-écrire entièrement et transformer l'application à partir de ce qu'elle était fonctionnellement en la rendant plus modulaire, plus simple et compréhensible en utilisant des bibliothèques logicielles open-source de haut niveau d'abstraction (SpringBoot\,\up{\cite{springboot}}) ainsi qu’une conception intelligente à fort découplage des modules au sein de l’application.
+
+        L'application est donc organisée en 3 couches principales auxquelles s’ajoute une couche auxiliaire :
+        \begin{itemize}
+            \item Une couche «façade» : elle gère la partie HTTP et la communication avec les utilisateurs (grâce à la bibliothèque Spring), qui appelle la couche suivante à chaque requête ;
+            \item Une couche «traitement» qui interprète les requêtes et retourne la réponse associée en s’appuyant sur la couche inférieure pour connaître son contenu ;
+            \item Une couche «données» pour le stockage de ces couples requêtes-réponses, dont la cible (fichier, base de données ...) varie selon l’implémentation ;
+            \item La couche auxiliaire pour la sécurité, responsable de l’historisation et de la sauvegarde en attente d’interfaçage avec le portail d’authentification du SI groupe. Elle vient de façon globale à coté de toutes les autres couches de l’application.
+        \end{itemize}
+        \vspace{\parskip} % espace entre paragraphes
+
+        L’application peut être utilisée en local par les projets ou même les développeurs pour des besoins particuliers, mais lorsque les bouchons sont mutualisés comme requis par les contraintes liées à la documentations des API, ils doivent donc être accessibles à tous, le déploiement d’un serveur sous le giron du Programme API est donc nécessaire.
+        Nous reviendrons plus tard sur les problèmes rencontrés aux déploiements puisqu’ils sont communs à toutes les applications que j'ai managées.
+
+        Enfin les utilisateurs ne sont pas tous des développeurs (architectes fonctionnels, personnes du métier) ; j’ai donc ajouté une interface Web intuitive simple, sommaire et facilement maintenable pour la partie développement, permettant la visualisation, création, modification et la suppression des bouchons sur le serveur, triés et classés sous des dossiers portant le nom de leur API.
+
+        Les projets qui ont rencontré des problèmes avec le serveur me contactaient directement en plus de déposer un ticket dans l’outil disponible dans la page de notre projet.
+        La résolution de ces problèmes était en général des problèmes d’encodage et de caractères spéciaux, parfois simplement le dépassement des limites de notre outil.
+        Par exemple avec le stockage en fichier, certaines limites de longueur de nom sont rapidement atteintes.
+        Ces contacts me permirent d’appréhender différentes méthodes de travail et une découverte d’applications internes très importantes et pourtant peu visibles.
+
+        \subsubsection{Serveur de fichier swagger (swagger-uploader)}
+
+        Le fichier swagger\,\up{\cite{swagger}} , fichier de documentation d’une API très synthétique ressemblant à un contrat d’interface, est un livrable de l’étape design d’une API.
+        C’est une partie importante de la documentation : elle doit être facilement accessible à tous (comme les bouchons).
+
+        Jusque là, les fichiers swagger étaient envoyés en ftp, tout le monde utilisant le même compte administrateur de la machine, sur un serveur.
+        Il était donc impossible de réellement partager les identifiants administrateurs de cette machine sans s’exposer à des problèmes évidents de sécurité.
+
+        J’ai donc développé un petit outil permettant d’envoyer un  fichier swagger, en le classant dans le bon domaine métier et avec le bon nom d’API afin d’ éviter les doublons.
+        Les fichiers sont vérifiés lorsqu’ils sont envoyés pour être sur qu’ils soient bien des fichiers swagger et qu’ils soient  validés.
+
+        L’interface de cet outil est pensé pour être le plus simple, le plus clair et le plus intuitif possible comme pour le serveur de bouchons.
+        Les utilisateur peuvent donc retrouver les fichiers triés et classés, copier l’URL qui est associé a un fichier pour le partager simplement ainsi qu’un bouton pour l’ouvrir directement dans un outil externe de visualisation.
+
+        La prise en main de cet outil par les projets et référents des domaines métiers fut immédiate et s’est correctement déroulée.
+        Aujourd’hui l’outil est bien rempli et contient des fichiers swagger pour tous les domaines métiers actifs autour des API.
+
+        \subsubsection{Dashboard de suivi de la publication et consommation des API}
+
+        Un besoin récurrent du programme API est le suivi des API dans leur vie.
+        Ce besoin de supervision m’a poussé à vouloir développer un petit tableau de bord automatique et avec un rafraîchissement journalier.
+        Avec mon tuteur, nous avons tout d’abord cherché comment récupérer toutes les informations sur les API.
+        Ce fut la partie la plus difficile et le plus longue ; aujourd’hui encore il n’y a  pas d’exportation automatique de l’historique de consommation des API sur 2 des 3 différentes gateway groupe.
+
+        Pour contourner et surmonter ces différents obstacles dans la récupération de ces informations, j’ai développé une multitude de scripts qui récupèrent plusieurs fichiers excels, qui effectuent un traitement à l’agrégat et en ressortent un fichier construit et consolidé.
+        Ces scripts ne sont aujourd’hui plus utilisés en dehors d’exemples depuis que j’ai mis en place des micro-services qui les remplacent.
+        Ils sont donc maintenant disponibles sous forme d’API.
+
+        J’ai également réalisé un prototype de dashboard mais la récupération des données de certaines sources est devenue trop aléatoire pour être utilisable efficacement.
+        Ce prototype pourra servir de base pour construire un nouvel outil le jour où des méthodes automatiques de récolte des données nécessaires, de préférence des API, seront disponibles.
+
+        Le tableau de bord est pour le moment un lourd fichier excel, maintenu par le directeur du programme API, qui puisent ses informations dans ces micro-services et dans des fichier exportés manuellement par différents intervenants des gateway.
+
+    \subsection{Support et accompagnement des projets}
+
+        \subsubsection{Participation validation design API}
+
+        Une des étapes importante dans la vie d’une API est la validation de son design.
+
+        C’est une revue collégiale impliquant les référents API métiers ainsi que les architectes disponibles pour vérifier que l’API est bel et bien utile, totalement nouvelle et bien conçue.
+        Les nouvelles API qui ne sont peu ou pas du tout utiles ne sont pas priorisées puisqu’elle ont en général déjà leur semblable en web-service et elles sont coûteuses à développer.
+        Les API qui recouvrent  des API existantes en terme de fonctionnalités se voient refusées au profit de ces API existantes qui peuvent être enrichies pour couvrir ce besoin.
+        Enfin la revue design permet de vérifier la qualité de la documentation et la conception de l’API, une API mal conçue ou mal documentée est une API morte-née.
+
+        J’ai pris part à ces revues et ai proposé de transformer le lourd processus manuel actuel, processus qui consiste à une demande de revue par mail qui aboutit à une réunion, en un processus plus centralisé grâce à un projet Gitlab où les projets viennent ouvrir un ticket pour leur revue design en y décrivant leur API et en y attachant leurs différents documents.
+        Cela permet de garder un historique ouvert à tous, l’échange est ainsi direct grâce au système de commentaires sur les tickets.
+
+        Le second but de cette transformation est la simplification pour les projets afin de les faire revenir dans ce processus de validation naturellement, cela évite aussi que la revue design soit une énorme contrainte temporelle.
+
+        \subsubsection{L'accompagnement dans l’usage des outils du programme}
+
+        Les projets qui sont nouveaux dans le monde des API ont besoin d’un accompagnement important dans l’utilisation de l’outillage et d’aiguillage vers les bons liens.
+        J’ai aidé plusieurs projets en leur fournissant les liens du wiki, des outils et des documents du programme API pour faciliter leur départ.
+        Ces recueil de connaissances et de bonnes pratiques permettent ainsi d’éviter de multiples refus pendant les revues design pour les projets de ces équipes débutantes.
+        Ces équipes me contactent ensuite pour demander de l’aide sur l’usage des outils comme le serveur de bouchons ou les kits de développement réalisés par un autre membre de l’équipe technique du programme API.
+
+        \subsubsection{accompagnement de la nouvelle équipe technique du programme API}
+
+        Une équipe technique de développeurs au service du programme API s’est construite et a pris forme pendant cette dernière année de mon apprentissage.
+        Son objectif est le support, l’aide et la réalisation de prestations pour les projets qui en ont besoin.
+        Elle est bien sur en charge des outils du programme API ainsi que leur infrastructure de déploiement.
+
+        L’équipe est aujourd’hui constituée de deux personnes : Jean-François Auge et Sébastien Bohn.
+        Ils ont tous deux suivi une multitude de formations internes dont celles du parcours de retour au code qui leur a permis de prendre ces postes de développeurs au sein du programme API.
+        Ils ont repris mes tâches pendant cet été et sont maintenant les contacts principaux, connus et reconnus pour les questions techniques.
+
+        \subsubsection{L'accompagnement Gate’Ape Okapi}
+
+        Les gateways actuelles ne conviennent pas aux processus agiles et au déploiement continu des applications :  il faut pour chaque modification, même mineure d’une application, remplir une série de formulaires pour la mise en production d’une nouvelle version.
+        Une autre contrainte importante est la souscription en self-service aux API publiées qui n’ est aujourd’hui pas possible de bout en bout et de manière uniforme sur les gateway.
+        De plus, différentes limitations supplémentaires sont imposées selon que les applications sont publiées en externe ou en interne, en production ou en environnement hors production.
+
+        Pour répondre à ces besoins qui sont requiers par les API, un prototype de gateway est en développement dans le service DFY.
+        Pour l’instant, cela est au stade de prototype, les composants sont en cours d’étude, de choix ou de développement pour y être intégrés.
+        Cette gateway vise aussi le respect de la philosophie open source, clef d’indépendance vis à vis des éditeurs et moteur pour l’innovation et l’image de marque.
+
+        J’ai été détaché une semaine à Sophia Antipolis pour aider ces équipes dans le domaine de la sécurité.
+        La sécurité des API est une grosse problématique induit par le nombre de requêtes par seconde et que chacune de ces requêtes est unique, la sécurité autour des API doit donc respecter les mêmes principes de design que pour les applications (découplage fort, pas de contexte ... ).
+        Nous avons choisi les tokens JWT comme la solution la plus tangible à ces contraintes.
+        J’ai développé plusieurs prototypes dans différents langages avec l’aide d’une multitude de bibliothèques logicielles pour vérifier l’état et le support logiciel de ce jeune standard open source (2015).
+        J’ai retourné mes tests, tests concluants pour l’équipe en charge de la sécurité.
+
+    \subsection{Animation et communication autour du programme API}
+
+        \subsubsection{Le Wiki}
+
+        C'est le point central de la documentation autour des API et du programme.
+        Il utilise le projet open source Dokuwiki\,\up{\cite{dokuwiki}} comme base.
+
+        Il est très très riche en contenu (le texte qui y est contenu représente environ 3Gio !) et contient des informations sur tout l’environnement des API, des explications voir même des compléments sur les recommandations groupes, les comptes rendus des réunions de travail ou de validation des API etc...
+
+        J’ai rédigé des tutoriels et des aides pour les outils.
+
+        Cet outil était à l’origine déployé sur un micro container dont les performances suffisaient tout juste et avec une mauvaise accessibilité réseau (pas disponible pour tout le groupe).
+        J’ai donc installé la dernière version, avec les plugins utiles et nécessaires, sur une machine virtuelle plus puissante et pérenne ;  puis il a fallu importer les données de l’ancien wiki avant de passer ce dernier en lecture seule en attendant sa suppression.
+        J’ai aussi aidé plusieurs programmes pour l’usage ou l’installation et le déploiement de leur wiki.
+
+        L’envoi de mail qui ne fonctionnait pas était un gros point bloquant dans la simplicité de l’utilisation du wiki : on ne pouvait pas s’inscrire ni récupérer son mot de passe, et bien sur on ne recevait pas les alertes sur les sujets que l’on voulait  suivre quand ils étaient mis à jour.
+        Le raccordement aux mails est une procédure administrative fastidieuse avec plusieurs étapes manuelles.
+        Une fois réussie, nous (l’équipe du programme) avons rédigé une page détaillant cette procédure.
+
+        \subsubsection{Le réseau social plazza}
+
+        Le plazza\,\up{\cite{plazza}}  est un réseau social interne qui nous permet d’annoncer des nouvelles en tant que programme API.
+        Les nouvelles versions déployées des outils ainsi que les opérations de maintenance sont annoncées pour le confort des utilisateurs.
+        D’autres nouvelles comme les mises à jour de pages de documentation importantes ou des informations importantes relatives au monde des API sont aussi relayées sur la page du programme.
+
+        L’usage de ce réseau social pourrait s'avérer bien plus grand mais cela demanderai beaucoup d’efforts pour des résultats moindres que ce que le wiki nous permet aujourd’hui, le plazza est donc strictement utilisé comme un espace de newsletters par le programme.
+
+        \subsubsection{Participation dans la communauté des architectes}
+
+        Un des événements importants dans la communauté des architectes est le forum des architectes : il prend place deux fois par an à Arcueil.
+        C’est un grand séminaire d’une journée où les architectes se donnent rendez vous pour échanger en personne à propos des résultats, des problématiques et des politiques du pôle architecture appliqués aux domaines métiers.
+        J’ai participé deux fois à ce séminaire (les deux autres occasions étaient pendant des périodes de cours à l’université) et j’y ai rencontré les personnes avec qui je suis en contact et avec qui je travaille.
+        J’ai eu beaucoup d’échanges sur les problématiques de déploiement et d’infrastructure qui sont aujourd’hui encore le plus gros frein aux méthodes agiles et API dans le groupe Orange.
+        C’est aussi par le biais de ce séminaire que j’ai eu la chance de rencontrer l’équipe sécurité et ainsi participer par la suite à une réunion de travail à Sophia Antipolis pendant une semaine pour aider les équipes qui travaillaient sur la nouvelle gateway.
+        Grâce à ce séminaire, j’ai eu beaucoup d’informations sur la stratégie groupe et architecture SI et j’ai ainsi pu avoir une vision et une compréhension au niveau groupe de la gouvernance, qui elle même impact directement la direction du programme API sur la politique à mener autour de l’environnement API et du SI.
+
+        Une autre part importante de la communauté des architectes est un forum dédié.
+        J’ai suivi et animé la section «API / programme API» en apportant dans les échanges les informations dont je disposais ou des solutions lorsque j’avais déjà rencontré les problèmes concernés.
+        Ce forum commence aujourd’hui à être abandonné au profit du réseau social plazza qui est plus ouvert, accessible et facile d’usage.
+        La section API est par exemple inactive depuis près d’un an, date de la création de la page programme API sur le réseau social et de création de l’équipe technique qui la remplace très avantageusement.
+
+        \subsubsection{Hackaton}
+
+        Une des activités pédagogique et ludique est le hackaton.
+        Un hackaton est un petit exercice pour apprendre sur un thème et qui essaye de ressembler à un jeux pour être plaisant aux élèves.
+
+        J’ai participé à la création et à l’animation de plusieurs hackaton sur le thème général des API, sur le thème de la sécurité des API ainsi que sur l’usage avancé des API.
+        Par exemple pour sensibiliser à propos de la sécurité, nous avons, avec mon tuteur, écrit un petit scénario prenant place dans l’univers de Star Wars et dans lequel l’élève doit réussir à souscrire à une API, s’y authentifier et finalement retrouver un personnage des films à l’aide d’indices reçus par SMS lorsqu’il fait ses requêtes (il doit en faire le moins possible pour être premier au classement).
+        Cela permit aux différentes personnes de découvrir le parcours de souscription à une API et surtout de comprendre comment utiliser ses identifiants d’une bonne façon, pour être responsable et en sécurité (on ne fournit pas son mot de passe en clair à chaque requête !).
+        Cet exercice permet aussi d’initier les joueurs aux problèmes d’encodages et à la convergence qu’il est possible d’atteindre avec les API : une requête par le joueur vers le serveur de jeux va initier une requête vers une API base de données Star Wars qui permet de récupérer des indices ainsi qu’une requête vers l’API SMS qui enverra un indice au hasard.
+
+        Pour les hackathons ciblés sur la découverte du monde des API, le serveur de bouchons est la clef de l’exercice puisque c’est sur lui que les personnes envoient leur requêtes.
+        Cela permet au programme API de proposer rapidement une partie technique et de se focaliser sur la pédagogie.
+
+        Les formations API proposent elles de petit ateliers ludique qui s'appuie sur le serveur de bouchon.
+        Je n’ai pas eu l’occasion de participer à une de ces formation faute au planning.

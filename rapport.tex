@@ -1,0 +1,67 @@
+%-*- coding: utf-8 -*
+%
+\documentclass[a4paper,12pt,final]{article}
+%
+% import des differents packages
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+%~ \usepackage{amsmath,amsfonts,amssymb} % extensions de l'ams pour les mathématiques
+\usepackage{graphicx} % pour insérer images et pdf entre autres
+\usepackage[french,english]{babel}
+\usepackage{listings}
+\usepackage{hyperref}
+%
+% pour régler les marges :
+\usepackage[top=2.5cm,bottom=2.3cm,right=2cm,left=2cm]{geometry}
+%
+%
+\newcommand{\reporttitle}{Émeric TOSI - Apprentissage 2015-2017} % Titre
+\newcommand{\reportauthor}{Émeric \textsc{TOSI}} % Auteur
+\newcommand{\reportsubject}{Architecte Logiciel pour le Programme API} % Sujet
+\newcommand{\reportdate}{21 septembre 2017} % Date
+%
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\setlength{\parskip}{1ex} % Espace entre les paragraphes
+%
+%
+\hypersetup{
+    pdftitle={\reporttitle},%
+    pdfauthor={\reportauthor},%
+    pdfsubject={\reportsubject}%
+}
+%
+%pp
+\begin{document}
+    %
+    \include{title}
+    \cleardoublepage % Dans le cas du recto verso, ajoute une page blanche si besoin
+    %
+    \include{abstract}
+    \cleardoublepage
+    %
+    \tableofcontents % Table des matières
+    \sloppy          % Justification moins stricte : des mots ne dépasseront pas des paragraphes
+    \cleardoublepage
+    %
+    \include{remerciements}
+    \cleardoublepage
+    %
+    \include{intro}
+    \cleardoublepage
+    %
+    \include{partie1}
+    \cleardoublepage
+    %
+    \include{partie2}
+    \cleardoublepage
+    %
+    \include{partie3}
+    \cleardoublepage
+    %
+    \include{concl}
+    \cleardoublepage
+    %
+    \include{references}
+    %
+\end{document}
